@@ -305,6 +305,11 @@ namespace UI
         return x;
     }
 
+    bool isEmpty(char array[], ptrdiff_t length)
+    {
+        return all_of(array, array + length, [](char x) { return x == '\0'; });
+    }
+
     int installTikCert(u64 tid, u8 mkey, u64 tkeyh, u64 tkeyl)
     {
         Result rc = 0;
@@ -325,6 +330,11 @@ namespace UI
         ifstream cert("sdmc:/switch/FreeShopNX/Certificate.cert", ios::in | ios::binary);
         cert.read(certBuf, certBuf_size);
         cert.close();
+
+        if (isEmpty(tikBuf, tikBuf_size) || isEmpty(certBuf, certBuf_size))
+        {
+            return -1;
+        }
 
         // patch TIK with title data
         memcpy(tikBuf+0x180, &tkeyh, 8);
@@ -426,9 +436,13 @@ namespace UI
             u64 tkeyl = titleKeys_low[idselected];
 
             char buf[256];
-            if (installTikCert(tid, mkey, tkeyh, tkeyl))
+            int res = installTikCert(tid, mkey, tkeyh, tkeyl);
+            if (res)
             {
-                FooterText =  "Cert & Tik install failed!";
+                if (res == -1)
+                    FooterText = "Cert or Tik files not found!";
+                else
+                    FooterText =  "Cert & Tik install failed!";
             } else if (nsInstallTitle(tid))
             {
                 FooterText = "Error downloading title ID " + idoptions[idselected] + ".";
@@ -485,6 +499,9 @@ namespace UI
                 getline(ss, s_rightsID, '|');
                 getline(ss, s_titleKey, '|');
                 getline(ss, titleName, '|');
+
+                if (s_rightsID == "" || s_titleKey == "" || titlename == "")
+                    continue;
 
                 u64 titleID = strtoull(s_rightsID.substr(0, 16).c_str(), NULL, 16);
                 u8 masterKey = stoul(s_rightsID.substr(16, 32).c_str(), NULL, 16);
