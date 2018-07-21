@@ -507,6 +507,9 @@ namespace UI
                 u8 masterKey = stoul(s_rightsID.substr(16, 32).c_str(), NULL, 16);
                 u64 titleKey1 = strtoull(s_titleKey.substr(0, 16).c_str(), NULL, 16);
                 u64 titleKey2 = strtoull(s_titleKey.substr(16, 32).c_str(), NULL, 16);
+                
+                if ((titleID & 0xFFF) != 0)
+                    continue;
 
                 titleIDs.push_back(titleID);
                 masterKeys.push_back(masterKey);
