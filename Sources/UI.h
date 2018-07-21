@@ -482,9 +482,9 @@ namespace UI
                     continue;
                 stringstream ss(buf);
                 string s_rightsID, s_titleKey, titleName;
-                getline(ss, s_rightsID, ',');
-                getline(ss, s_titleKey, ',');
-                getline(ss, titleName, ',');
+                getline(ss, s_rightsID, '|');
+                getline(ss, s_titleKey, '|');
+                getline(ss, titleName, '|');
 
                 u64 titleID = strtoull(s_rightsID.substr(0, 16).c_str(), NULL, 16);
                 u8 masterKey = stoul(s_rightsID.substr(16, 32).c_str(), NULL, 16);
