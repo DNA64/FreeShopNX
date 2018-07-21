@@ -10,13 +10,13 @@ Requirements:
 
 `Ticket.tik` and `Certificate.cert` are not supplied in this repo, you will need to track them down and obtain them yourself. They are the same ones used in CDNSP. 
 
-`FreeShopNX.txt` contains the Right ID, Title Key, and Title Name of any titles you wish to install, comma separated. It uses the same format as a CSV file, simply renamed to TXT. Example below:
+`FreeShopNX.txt` contains the Right ID, Title Key, and Title Name of any titles you wish to install, verticle pipe separated. Example below:
 
 ```
-01001de0050120000000000000000003,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,Quest of Dungeons
-01002b30028f60000000000000000004,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,Celeste
-01000000000100000000000000000003,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,Super Mario Odyssey
-01007ef00011e0000000000000000000,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,The Legend of Zelda: Breath of the Wild
+01001de0050120000000000000000003|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|Quest of Dungeons
+01002b30028f60000000000000000004|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|Celeste
+01000000000100000000000000000003|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|Super Mario Odyssey
+01007ef00011e0000000000000000000|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|The Legend of Zelda: Breath of the Wild
 
 ```
 
