@@ -500,7 +500,7 @@ namespace UI
                 getline(ss, s_titleKey, '|');
                 getline(ss, titleName, '|');
 
-                if (s_rightsID == "" || s_titleKey == "" || titlename == "")
+                if (s_rightsID == "" || s_titleKey == "" || titleName == "")
                     continue;
 
                 u64 titleID = strtoull(s_rightsID.substr(0, 16).c_str(), NULL, 16);
