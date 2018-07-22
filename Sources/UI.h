@@ -9,9 +9,7 @@ namespace UI
     static SDL_Window *sdl_wnd;
     static SDL_Surface *sdl_surf;
     static SDL_Renderer *sdl_render;
-    static TTF_Font *fntLarge;
-    static TTF_Font *fntMedium;
-    static TTF_Font *fntSmall;
+    static TTF_Font *fnt;
 
     static string Back = "romfs:/Graphics/Background.png";
     static SDL_Surface *sdls_Back;
@@ -225,7 +223,7 @@ namespace UI
 
     void DrawText(TTF_Font *font, int x, int y, SDL_Color colour, const char *text)
     {
-        SDL_Surface *surface = TTF_RenderText_Blended_Wrapped(font, text, colour, 1280);
+        SDL_Surface *surface = TTF_RenderUTF8_Blended_Wrapped(font, text, colour, 1280);
         SDL_SetSurfaceAlphaMod(surface, 255);
         SDL_Rect position = { x, y, surface->w, surface->h };
         SDL_BlitSurface(surface, NULL, sdl_surf, &position);
@@ -259,7 +257,7 @@ namespace UI
     {
         SDL_RenderClear(sdl_render);
         DrawBack(sdls_Back, sdlt_Back);
-        DrawText(fntLarge, TitleX, TitleY, {0, 0, 0, 255}, "FreeShopNX - CDN title installer");
+        DrawText(fnt, TitleX, TitleY, {255, 255, 255, 255}, "FreeShopNX - CDN title installer");
         int ox = Opt1X;
         int oy = Opt1Y;
         uint start = (idselected / 10) * 10;
@@ -268,32 +266,31 @@ namespace UI
         {
             if(i == selected)
             {
-                DrawText(fntMedium, ox, oy, {120, 120, 120, 255}, options[i].c_str());
+                DrawText(fnt, ox, oy, {134, 134, 134, 255}, options[i].c_str());
                 if(i == 0)
                 {
-                    DrawText(fntSmall, 450, 575, {0, 0, 0, 255}, "Scroll: Up/Down  |  Jump 10: Left/Right  |  Jump 50: L/R");
-                    DrawText(fntSmall, 450, 600, {0, 0, 0, 255}, "A: Select  |  -: About  |  +: Exit");
+                    DrawText(fnt, 450, 585, {255, 255, 255, 255}, "A: Select  |  -: About  |  +: Exit");
+                    DrawText(fnt, 450, 610, {255, 255, 255, 255}, "Scroll: Up/Down  |  Jump 10: Left/Right  |  Jump 50: L/R");
                     int fx = 450;
                     int fy = 105;
                     for(uint j = start; j < end; j++)
                     {
                         if(j == idselected)
-                        {
-                            DrawText(fntMedium, fx, fy, {255, 0, 0, 255}, idoptions[j].c_str());
-                        }
-                        else DrawText(fntMedium, fx, fy, {0, 0, 0, 255}, idoptions[j].c_str());
+                            DrawText(fnt, fx, fy, {255, 0, 0, 255}, idoptions[j].c_str());
+                        else 
+                            DrawText(fnt, fx, fy, {255, 255, 255, 255}, idoptions[j].c_str());
                         fy += 45;
                     }
                 }
                 else if(i == 1)
                 {
-                    DrawText(fntLarge, 610, 330, {0, 0, 255, 255}, "Warning: You may be banned.\nCredits: AnalogMan, Adubbz,\nXorTroll, Reisyukaku,\nSimonMKWii");
+                    DrawText(fnt, 610, 330, {255, 255, 255, 255}, "Warning: You may be banned.\n\nCredits:\nAnalogMan, Adubbz, XorTroll,\nReisyukaku, AmiiboUGC");
                 }
             }
-            else DrawText(fntMedium, ox, oy, {0, 0, 0, 255}, options[i].c_str());
+            else DrawText(fnt, ox, oy, {255, 255, 255, 255}, options[i].c_str());
             oy += 50;
         }
-        DrawText(fntMedium, TitleX, 660, {0, 0, 0, 255}, FooterText.c_str());
+        DrawText(fnt, TitleX, 660, {255, 255, 255, 255}, FooterText.c_str());
         SDL_RenderPresent(sdl_render);
     }
 
@@ -454,10 +451,10 @@ namespace UI
             Draw();
         } else if (k & KEY_MINUS)
         {
-            if (selected == 0)
-                selected = 1;
-            else
+            if (selected == options.size() - 1)
                 selected = 0;
+            else
+                selected += 1;
             Draw();
         } else if (k & KEY_PLUS)
         {
@@ -477,13 +474,11 @@ namespace UI
         IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
         TTF_Init();
         SDL_SetRenderDrawColor(sdl_render, 255, 255, 255, 255);
-        fntLarge = TTF_OpenFont("romfs:/Fonts/Roboto-Regular.ttf", 35);
-        fntMedium = TTF_OpenFont("romfs:/Fonts/Roboto-Regular.ttf", 30);
-        fntSmall = TTF_OpenFont("romfs:/Fonts/Roboto-Regular.ttf", 20);
+        fnt = TTF_OpenFont("romfs:/Fonts/FontStandard.ttf", 25);
         sdls_Back = InitSurface(Back);
         sdlt_Back = InitTexture(sdls_Back);
-        options.push_back("Install titles");
-        options.push_back("About FreeShopNX");
+        options.push_back("Install");
+        options.push_back("About");
         FooterText = "Ready to download titles!";
         Draw();
         ifstream ifs("sdmc:/switch/FreeShopNX/FreeShopNX.txt");
