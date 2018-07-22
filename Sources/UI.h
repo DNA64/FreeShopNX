@@ -427,28 +427,31 @@ namespace UI
         }
         else if(k & KEY_A)
         {
-            u64 tid = titleIDs[idselected];
-            u8 mkey = masterKeys[idselected];
-            u64 tkeyh = titleKeys_high[idselected];
-            u64 tkeyl = titleKeys_low[idselected];
+            if (selected == 0)
+            {
+                u64 tid = titleIDs[idselected];
+                u8 mkey = masterKeys[idselected];
+                u64 tkeyh = titleKeys_high[idselected];
+                u64 tkeyl = titleKeys_low[idselected];
 
-            char buf[256];
-            int res = installTikCert(tid, mkey, tkeyh, tkeyl);
-            if (res)
-            {
-                if (res == -1)
-                    FooterText = "Cert or Tik files not found!";
-                else
-                    FooterText =  "Cert & Tik install failed!";
-            } else if (nsInstallTitle(tid))
-            {
-                FooterText = "Error downloading title ID " + idoptions[idselected] + ".";
-            } else
-            {
-                sprintf(buf, "Download started for %016lx. Press + to exit or select another.", tid);
-                FooterText = buf;
+                char buf[256];
+                int res = installTikCert(tid, mkey, tkeyh, tkeyl);
+                if (res)
+                {
+                    if (res == -1)
+                        FooterText = "Cert or Tik files not found!";
+                    else
+                        FooterText =  "Cert & Tik install failed!";
+                } else if (nsInstallTitle(tid))
+                {
+                    FooterText = "Error downloading title ID " + idoptions[idselected] + ".";
+                } else
+                {
+                    sprintf(buf, "Download started for %016lx. Press + to exit or select another.", tid);
+                    FooterText = buf;
+                }
+                Draw();
             }
-            Draw();
         } else if (k & KEY_MINUS)
         {
             if (selected == options.size() - 1)
