@@ -24,6 +24,6 @@ Right IDs are the 16 character Title ID followed by the Master Key revision the 
 
 No TItle Keys or completed `FreeShopNX.txt` file will be provided from this repo. 
 
-Credits to Adubbz for Tik and Cert installation with TinFoil, XorTroll for the eNXhop base and UI, Reisyukaku for on-system title installation via BogInstaller, and SimonMKWii for the icon.
+Credits to Adubbz for Tik and Cert installation with TinFoil, XorTroll for the eNXhop base and UI, Reisyukaku for on-system title installation via BogInstaller, and AmiiboUGC for the icon.
 
 Note: You'll probably get banned. 
