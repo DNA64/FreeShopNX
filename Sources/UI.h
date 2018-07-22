@@ -33,6 +33,7 @@ namespace UI
     static u64 g_esRefCnt;
     static Service g_nsAppManSrv, g_nsGetterSrv;
     static u64 g_nsRefCnt;
+    static FsStorageId storageID = FsStorageId_SdCard;
 
     Result esInitialize()
     {
@@ -258,6 +259,7 @@ namespace UI
         SDL_RenderClear(sdl_render);
         DrawBack(sdls_Back, sdlt_Back);
         DrawText(fnt, TitleX, TitleY, {255, 255, 255, 255}, "FreeShopNX - CDN title installer");
+        DrawText(fnt, 1125, TitleY, {255, 255, 255, 255}, (storageID == FsStorageId_SdCard) ? "X: SD" : "X: NAND");
         int ox = Opt1X;
         int oy = Opt1Y;
         uint start = (idselected / 10) * 10;
@@ -349,7 +351,7 @@ namespace UI
 
     int nsInstallTitle(u64 id)
     {
-        Result res = nsBeginInstallApplication(id, 0, (FsStorageId)5);
+        Result res = nsBeginInstallApplication(id, 0, storageID);
         return res;
     }
 
@@ -458,6 +460,14 @@ namespace UI
                 selected = 0;
             else
                 selected += 1;
+            Draw();
+        }
+        else if (k & KEY_X)
+        {
+            if (storageID == FsStorageId_SdCard)
+                storageID = FsStorageId_NandUser;
+            else
+                storageID = FsStorageId_SdCard;
             Draw();
         } else if (k & KEY_PLUS)
         {
