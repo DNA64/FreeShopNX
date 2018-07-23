@@ -4,12 +4,36 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
+#define FON_A       "\uE0E0"
+#define FON_B       "\uE0E1"
+#define FON_X       "\uE0E2"
+#define FON_Y       "\uE0E3"
+#define FON_L       "\uE0E4"
+#define FON_R       "\uE0E5"
+#define FON_ZL      "\uE0E6"
+#define FON_ZR      "\uE0E7"
+#define FON_SL      "\uE0E8"
+#define FON_SR      "\uE0E9"
+#define FON_UP      "\uE0EB"
+#define FON_DN      "\uE0EC"
+#define FON_LT      "\uE0ED"
+#define FON_RT      "\uE0EE"
+#define FON_PL      "\uE0EF"
+#define FON_MI      "\uE0F0"
+#define FON_HM      "\uE0F4"
+#define FON_SS      "\uE0F5"
+#define FON_LS      "\uE101"
+#define FON_RS      "\uE102"
+#define FON_L3      "\uE104"
+#define FON_R3      "\uE105"
+
 namespace UI
 {
     static SDL_Window *sdl_wnd;
     static SDL_Surface *sdl_surf;
     static SDL_Renderer *sdl_render;
     static TTF_Font *fnt;
+    static TTF_Font *btnfnt;
 
     static string Back = "romfs:/Graphics/Background.png";
     static SDL_Surface *sdls_Back;
@@ -164,7 +188,7 @@ namespace UI
         return rc;
     }
 
-    Result nsBeginInstallApplication(u64 tid, u32 unk, u8 storageId)
+    Result nsDownloadApplication(u64 tid, u32 unk, u8 storageId)
     {
         IpcCommand c;
         ipcInitialize(&c);
@@ -181,7 +205,7 @@ namespace UI
         raw = (struct RAW *)ipcPrepareHeader(&c, sizeof(*raw));
 
         raw->magic = SFCI_MAGIC;
-        raw->cmd_id = 26;
+        raw->cmd_id = 82;
         raw->storageId = storageId;
         raw->unk = unk;
         raw->tid = tid;
@@ -259,7 +283,8 @@ namespace UI
         SDL_RenderClear(sdl_render);
         DrawBack(sdls_Back, sdlt_Back);
         DrawText(fnt, TitleX, TitleY, {255, 255, 255, 255}, "FreeShopNX - CDN title installer");
-        DrawText(fnt, 1125, TitleY, {255, 255, 255, 255}, (storageID == FsStorageId_SdCard) ? "X: SD" : "X: NAND");
+        DrawText(btnfnt, 1115, TitleY, {255, 255, 255, 255}, FON_X);
+        DrawText(fnt, 1150, TitleY, {255, 255, 255, 255}, (storageID == FsStorageId_SdCard) ? "SD" : "NAND");
         int ox = Opt1X;
         int oy = Opt1Y;
         uint start = (idselected / 10) * 10;
@@ -271,8 +296,20 @@ namespace UI
                 DrawText(fnt, ox, oy, {134, 134, 134, 255}, options[i].c_str());
                 if(i == 0)
                 {
-                    DrawText(fnt, 450, 585, {255, 255, 255, 255}, "A: Select  |  -: About  |  +: Exit");
-                    DrawText(fnt, 450, 610, {255, 255, 255, 255}, "Scroll: Up/Down  |  Jump 10: Left/Right  |  Jump 50: L/R");
+                    DrawText(btnfnt, 450, 585, {255, 255, 255, 255}, FON_A);
+                    DrawText(fnt, 485, 585, {255, 255, 255, 255}, "Select");
+                    DrawText(btnfnt, 590, 585, {255, 255, 255, 255}, FON_MI);
+                    DrawText(fnt, 625, 585, {255, 255, 255, 255}, "About");
+                    DrawText(btnfnt, 725, 585, {255, 255, 255, 255}, FON_PL);
+                    DrawText(fnt, 760, 585, {255, 255, 255, 255}, "Quit");
+
+                    DrawText(btnfnt, 450, 612, {255, 255, 255, 255}, FON_UP FON_DN);
+                    DrawText(fnt, 515, 612, {255, 255, 255, 255}, "Scroll");
+                    DrawText(btnfnt, 625, 612, {255, 255, 255, 255}, FON_LT FON_RT);
+                    DrawText(fnt, 690, 612, {255, 255, 255, 255}, "Skip 10");
+                    DrawText(btnfnt, 820, 612, {255, 255, 255, 255}, FON_L FON_R);
+                    DrawText(fnt, 885, 612, {255, 255, 255, 255}, "Skip 50");
+
                     int fx = 450;
                     int fy = 105;
                     for(uint j = start; j < end; j++)
@@ -351,7 +388,8 @@ namespace UI
 
     int nsInstallTitle(u64 id)
     {
-        Result res = nsBeginInstallApplication(id, 0, storageID);
+        Result res = 0;
+        res = nsDownloadApplication(id, 0, storageID);
         return res;
     }
 
@@ -449,7 +487,7 @@ namespace UI
                     FooterText = "Error downloading title ID " + idoptions[idselected] + ".";
                 } else
                 {
-                    sprintf(buf, "Download started for %016lx. Press + to exit or select another.", tid);
+                    sprintf(buf, "Download started for %016lx. You may quit or select another.", tid);
                     FooterText = buf;
                 }
                 Draw();
@@ -488,6 +526,7 @@ namespace UI
         TTF_Init();
         SDL_SetRenderDrawColor(sdl_render, 255, 255, 255, 255);
         fnt = TTF_OpenFont("romfs:/Fonts/FontStandard.ttf", 25);
+        btnfnt = TTF_OpenFont("romfs:/Fonts/Extended.ttf", 25);
         sdls_Back = InitSurface(Back);
         sdlt_Back = InitTexture(sdls_Back);
         options.push_back("Install");
